@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+use std::collections::HashMap;
+
 use dioxus::prelude::*;
 use dioxus_logger::tracing::Level;
 use dioxus_sdk::storage::*;
@@ -35,6 +37,20 @@ struct CountryData {
     population: u64,
     #[serde(rename = "timezones")]
     timezones: Vec<String>,
+    #[serde(rename = "languages")]
+    languages: HashMap<String, String>,
+    #[serde(rename = "currencies")]
+    currencies: HashMap<String, Currency>,
+    #[serde(rename = "borders")]
+    borders: Option<Vec<String>>,
+}
+
+#[derive(Deserialize, Debug)]
+struct Currency {
+    #[serde(rename = "name")]
+    name: String,
+    #[serde(rename = "symbol")]
+    symbol: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -47,25 +63,11 @@ struct CapitalInfo {
 struct Name {
     #[serde(rename = "official")]
     official: String,
-    // #[serde(rename = "nativeName")]
-    // native_name: NativeName,
 }
-
-// #[derive(Deserialize, Debug)]
-// struct NativeName {
-//     #[serde(rename = "bar")]
-//     bar: NativeNameBar,
-// }
-//
-// #[derive(Deserialize, Debug)]
-// struct NativeNameBar {
-//     #[serde(rename = "official")]
-//     official: String,
-// }
 
 async fn get_countryinfo(location: String) -> reqwest::Result<Vec<CountryData>> {
     reqwest::get(format!(
-        "https://restcountries.com/v3.1/translation/{}?fields=name,capital,population,flag,region,subregion,timezones,latlng,capitalInfo,tld",
+        "https://restcountries.com/v3.1/translation/{}?fields=name,capital,population,flag,region,subregion,timezones,latlng,capitalInfo,tld,languages,currencies,borders",
         location
     ))
     .await?
@@ -132,8 +134,16 @@ fn App() -> Element {
                             }
                             li {
                                 div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Capital LatLng" }
+                                    span {
+                                        "{data[0].capital_info.latlng[0]}/{data[0].capital_info.latlng[0]}"
+                                    }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
                                     span { class: "text-overlay0", "Timezones" }
-                                    span { class: "w-[15rem] truncate text-ellipsis",
+                                    span {
                                         {data[0].timezones.iter().map(|timezone|
                                         rsx!(
                                             span {"{timezone} "}
@@ -156,6 +166,40 @@ fn App() -> Element {
                                 div { class: "flex py-3 flex-col gap-1",
                                     span { class: "text-overlay0", "Population" }
                                     span { "{data[0].population.to_formatted_string(&Locale::en)}" }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Borders" }
+                                    span {
+                                        if let Some(borders) = &data[0].borders {
+                                            { borders.iter().map(|border| rsx!(span {"{border} "})) }
+                                        } else {
+                                            span { "None" }
+                                        }
+                                    }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Languages" }
+                                    span { class: "w-[19rem] truncate text-ellipsis",
+                                        {data[0].languages.values().map(|lang|
+                                        rsx!(
+                                            span {"{lang} "}
+                                        ))}
+                                    }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Currencies" }
+                                    span {
+                                        {data[0].currencies.values().map(|currency|
+                                        rsx!(
+                                            span {"{currency.name} ({currency.symbol}) "}
+                                        ))}
+                                    }
                                 }
                             }
                         }
