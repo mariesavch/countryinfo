@@ -43,6 +43,14 @@ struct CountryData {
     currencies: HashMap<String, Currency>,
     #[serde(rename = "borders")]
     borders: Option<Vec<String>>,
+    #[serde(rename = "continents")]
+    continents: Option<Vec<String>>,
+    #[serde(rename = "landlocked")]
+    landlocked: bool,
+    #[serde(rename = "startOfWeek")]
+    startOfWeek: String,
+    #[serde(rename = "maps")]
+    maps: Maps,
 }
 
 #[derive(Deserialize, Debug)]
@@ -65,9 +73,15 @@ struct Name {
     official: String,
 }
 
+#[derive(Deserialize, Debug)]
+struct Maps {
+    #[serde(rename = "openStreetMaps")]
+    openStreetMaps: String,
+}
+
 async fn get_countryinfo(location: String) -> reqwest::Result<Vec<CountryData>> {
     reqwest::get(format!(
-        "https://restcountries.com/v3.1/translation/{}?fields=name,capital,population,flag,region,subregion,timezones,latlng,capitalInfo,tld,languages,currencies,borders",
+        "https://restcountries.com/v3.1/translation/{}?fields=name,capital,population,flag,region,subregion,timezones,latlng,capitalInfo,tld,languages,currencies,borders,landlocked,startOfWeek,continents,maps",
         location
     ))
     .await?
@@ -183,7 +197,7 @@ fn App() -> Element {
                             li {
                                 div { class: "flex py-3 flex-col gap-1",
                                     span { class: "text-overlay0", "Languages" }
-                                    span { class: "w-[19rem] truncate text-ellipsis",
+                                    span {
                                         {data[0].languages.values().map(|lang|
                                         rsx!(
                                             span {"{lang} "}
@@ -199,6 +213,45 @@ fn App() -> Element {
                                         rsx!(
                                             span {"{currency.name} ({currency.symbol}) "}
                                         ))}
+                                    }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Landlocked" }
+                                    if data[0].landlocked {
+                                        span { "Yes" }
+                                    } else {
+                                        span { "No" }
+                                    }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Start of week" }
+                                    span { class: "capitalize", "{data[0].startOfWeek}" }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Continents" }
+                                    span {
+                                        if let Some(continents) = &data[0].continents {
+                                            { continents.iter().map(|continent| rsx!(span {"{continent} "})) }
+                                        }
+                                    }
+                                }
+                            }
+                            li {
+                                div { class: "flex py-3 flex-col gap-1",
+                                    span { class: "text-overlay0", "Maps" }
+                                    span {
+                                        a {
+                                            class: "underlined",
+                                            target: "_blank",
+                                            href: data[0].maps.openStreetMaps.to_string(),
+                                            "OpenStreetMaps"
+                                        }
                                     }
                                 }
                             }
