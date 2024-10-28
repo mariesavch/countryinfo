@@ -1,0 +1,14 @@
+[package]
+name = "countryinfo"
+version = "0.1.0"
+authors = ["mariesavch <mariesavch@icloud.com>"]
+edition = "2021"
+
+[dependencies]
+dioxus = { version = "0.5.6", features = ["router", "web"] }
+dioxus-logger = "0.5.1"
+dioxus-sdk = { version = "0.5.0", features = ["storage"] }
+manganis = "0.2.2"
+num-format = "0.4.4"
+reqwest = { version = "0.12.8", features = ["json"] }
+serde = "1.0.213"
