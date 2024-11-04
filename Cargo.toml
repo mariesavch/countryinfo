@@ -12,3 +12,4 @@ manganis = "0.2.2"
 num-format = "0.4.4"
 reqwest = { version = "0.12.8", features = ["json"] }
 serde = "1.0.213"
+tailwind_fuse = "0.3.1"
