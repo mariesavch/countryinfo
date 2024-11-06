@@ -76,168 +76,157 @@ fn App() -> Element {
 
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("/assets/main.css") }
-        main {
-            margin_left: "auto",
-            margin_right: "auto",
-            max_width: "768px",
-            padding_top: "64px",
-            padding_left: "24px",
-            padding_right: "24px",
-            padding_bottom: "80px",
-            div { class: "pt-6 min-[950px]:pt-16",
-                input {
-                    class: "input",
-                    aria_label: "Enter country",
-                    placeholder: "Enter country",
-                    spellcheck: false,
-                    value: country,
-                    r#type: "text",
-                    autofocus: true,
-                    oninput: move |event| country.set(event.value()),
-                }
-                div { margin_top: "12px",
-                    if let Some(Ok(data)) = countryinfo.read().as_ref() {
-                        ul {
-                            class: "animated-list",
-                            all: "unset",
-                            display: "grid",
-                            grid_template_columns: "repeat(auto-fit, minmax(300px, 1fr))",
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Official name" }
-                                    span { "{data[0].name.official} {data[0].flag}" }
+        main { class: "main",
+            input {
+                class: "input",
+                aria_label: "Enter country",
+                placeholder: "Enter country",
+                spellcheck: false,
+                value: country,
+                r#type: "text",
+                autofocus: true,
+                oninput: move |event| country.set(event.value()),
+            }
+            div { margin_top: "12px",
+                if let Some(Ok(data)) = countryinfo.read().as_ref() {
+                    ul {
+                        class: "animated-list",
+                        all: "unset",
+                        display: "grid",
+                        grid_template_columns: "repeat(auto-fit, minmax(300px, 1fr))",
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Official name" }
+                                span { "{data[0].name.official} {data[0].flag}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Capital" }
+                                span { "{data[0].capital[0]}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Region" }
+                                span { "{data[0].region}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Subregion" }
+                                span { "{data[0].subregion}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "LatLng" }
+                                span { "{data[0].latlng[0]}/{data[0].latlng[1]}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Capital LatLng" }
+                                span { "{data[0].capital_info.latlng[0]}/{data[0].capital_info.latlng[0]}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Timezones" }
+                                span {
+                                    {data[0].timezones.iter().map(|timezone| rsx! {
+                                        span { "{timezone} " }
+                                    })}
                                 }
                             }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Capital" }
-                                    span { "{data[0].capital[0]}" }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "TLD" }
+                                span {
+                                    {data[0].tld.iter().map(|tld| rsx! {
+                                        span { "{tld} " }
+                                    })}
                                 }
                             }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Region" }
-                                    span { "{data[0].region}" }
-                                }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Population" }
+                                span { "{data[0].population.to_formatted_string(&Locale::en)}" }
                             }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Subregion" }
-                                    span { "{data[0].subregion}" }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "LatLng" }
-                                    span { "{data[0].latlng[0]}/{data[0].latlng[1]}" }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Capital LatLng" }
-                                    span {
-                                        "{data[0].capital_info.latlng[0]}/{data[0].capital_info.latlng[0]}"
-                                    }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Timezones" }
-                                    span {
-                                        {data[0].timezones.iter().map(|timezone| rsx! {
-                                            span { "{timezone} " }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Borders" }
+                                span {
+                                    if let Some(borders) = &data[0].borders {
+                                        {borders.iter().map(|border| rsx! {
+                                            span { "{border} " }
                                         })}
-                                    }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "TLD" }
-                                    span {
-                                        {data[0].tld.iter().map(|tld| rsx! {
-                                            span { "{tld} " }
-                                        })}
-                                    }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Population" }
-                                    span { "{data[0].population.to_formatted_string(&Locale::en)}" }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Borders" }
-                                    span {
-                                        if let Some(borders) = &data[0].borders {
-                                            {borders.iter().map(|border| rsx! {
-                                                span { "{border} " }
-                                            })}
-                                        } else {
-                                            span { "None" }
-                                        }
-                                    }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Languages" }
-                                    span {
-                                        {data[0].languages.values().map(|lang| rsx! {
-                                            span { "{lang} " }
-                                        })}
-                                    }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Currencies" }
-                                    span {
-                                        {data[0].currencies.values().map(|currency| rsx! {
-                                            span { "{currency.name} ({currency.symbol}) " }
-                                        })}
-                                    }
-                                }
-                            }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Landlocked" }
-                                    if data[0].landlocked {
-                                        span { "Yes" }
                                     } else {
-                                        span { "No" }
+                                        span { "None" }
                                     }
                                 }
                             }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Start of week" }
-                                    span { class: "capitalize", "{data[0].startOfWeek}" }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Languages" }
+                                span {
+                                    {data[0].languages.values().map(|lang| rsx! {
+                                        span { "{lang} " }
+                                    })}
                                 }
                             }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Continents" }
-                                    span {
-                                        if let Some(continents) = &data[0].continents {
-                                            {continents.iter().map(|continent| rsx! {
-                                                span { "{continent} " }
-                                            })}
-                                        }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Currencies" }
+                                span {
+                                    {data[0].currencies.values().map(|currency| rsx! {
+                                        span { "{currency.name} ({currency.symbol}) " }
+                                    })}
+                                }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Landlocked" }
+                                if data[0].landlocked {
+                                    span { "Yes" }
+                                } else {
+                                    span { "No" }
+                                }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Start of week" }
+                                span { class: "capitalize", "{data[0].startOfWeek}" }
+                            }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Continents" }
+                                span {
+                                    if let Some(continents) = &data[0].continents {
+                                        {continents.iter().map(|continent| rsx! {
+                                            span { "{continent} " }
+                                        })}
                                     }
                                 }
                             }
-                            li {
-                                div { class: "item",
-                                    span { color: "var(--overlay0)", "Maps" }
-                                    span {
-                                        a {
-                                            class: "underlined",
-                                            target: "_blank",
-                                            href: data[0].maps.openStreetMaps.to_string(),
-                                            "OpenStreetMaps"
-                                        }
+                        }
+                        li {
+                            div { class: "item",
+                                span { color: "var(--overlay0)", "Maps" }
+                                span {
+                                    a {
+                                        class: "underlined",
+                                        target: "_blank",
+                                        href: data[0].maps.openStreetMaps.to_string(),
+                                        "OpenStreetMaps"
                                     }
                                 }
                             }
