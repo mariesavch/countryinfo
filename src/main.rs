@@ -9,8 +9,6 @@ use num_format::{Locale, ToFormattedString};
 use serde::Deserialize;
 use tailwind_fuse::tw_merge;
 
-const _TAILWIND_URL: &str = manganis::mg!(file("assets/tailwind.css"));
-
 fn main() {
     dioxus_sdk::storage::set_dir!();
     dioxus_logger::init(Level::INFO).expect("logger failed to init");
@@ -79,6 +77,7 @@ fn App() -> Element {
     let item = "flex py-3 flex-col gap-1";
 
     rsx! {
+        document::Link { rel: "stylesheet", href: asset!("/assets/tailwind.css") }
         main { class: "mx-auto max-w-[850px] px-6 pb-20",
             div { class: "pt-6 min-[950px]:pt-16",
                 input {
@@ -94,7 +93,7 @@ fn App() -> Element {
                         "outline-none transition-colors duration-300",
                         "placeholder:text-overlay0 hover:border-surface1",
                         "focus:text-text focus:border-surface2"
-                    )
+                    ),
                 }
                 div { class: "mt-6",
                     if let Some(Ok(data)) = countryinfo.read().as_ref() {
@@ -141,10 +140,9 @@ fn App() -> Element {
                                 div { class: item,
                                     span { class: "text-overlay0", "Timezones" }
                                     span {
-                                        {data[0].timezones.iter().map(|timezone|
-                                        rsx!(
-                                            span {"{timezone} "}
-                                        ))}
+                                        {data[0].timezones.iter().map(|timezone| rsx! {
+                                            span { "{timezone} " }
+                                        })}
                                     }
                                 }
                             }
@@ -152,10 +150,9 @@ fn App() -> Element {
                                 div { class: item,
                                     span { class: "text-overlay0", "TLD" }
                                     span {
-                                        {data[0].tld.iter().map(|tld|
-                                        rsx!(
-                                            span {"{tld} "}
-                                        ))}
+                                        {data[0].tld.iter().map(|tld| rsx! {
+                                            span { "{tld} " }
+                                        })}
                                     }
                                 }
                             }
@@ -170,7 +167,9 @@ fn App() -> Element {
                                     span { class: "text-overlay0", "Borders" }
                                     span {
                                         if let Some(borders) = &data[0].borders {
-                                            { borders.iter().map(|border| rsx!(span {"{border} "})) }
+                                            {borders.iter().map(|border| rsx! {
+                                                span { "{border} " }
+                                            })}
                                         } else {
                                             span { "None" }
                                         }
@@ -181,10 +180,9 @@ fn App() -> Element {
                                 div { class: item,
                                     span { class: "text-overlay0", "Languages" }
                                     span {
-                                        {data[0].languages.values().map(|lang|
-                                        rsx!(
-                                            span {"{lang} "}
-                                        ))}
+                                        {data[0].languages.values().map(|lang| rsx! {
+                                            span { "{lang} " }
+                                        })}
                                     }
                                 }
                             }
@@ -192,10 +190,9 @@ fn App() -> Element {
                                 div { class: item,
                                     span { class: "text-overlay0", "Currencies" }
                                     span {
-                                        {data[0].currencies.values().map(|currency|
-                                        rsx!(
-                                            span {"{currency.name} ({currency.symbol}) "}
-                                        ))}
+                                        {data[0].currencies.values().map(|currency| rsx! {
+                                            span { "{currency.name} ({currency.symbol}) " }
+                                        })}
                                     }
                                 }
                             }
@@ -220,7 +217,9 @@ fn App() -> Element {
                                     span { class: "text-overlay0", "Continents" }
                                     span {
                                         if let Some(continents) = &data[0].continents {
-                                            { continents.iter().map(|continent| rsx!(span {"{continent} "})) }
+                                            {continents.iter().map(|continent| rsx! {
+                                                span { "{continent} " }
+                                            })}
                                         }
                                     }
                                 }
