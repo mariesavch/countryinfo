@@ -16,7 +16,7 @@ reload_html = true
 watch_path = ["src", "assets"]
 
 [web.resource]
-style = ["assets/main.css"]
+style = ["assets/tailwind.css"]
 script = []
 
 [web.resource.dev]
