@@ -5,6 +5,7 @@ authors = ["mariesavch <mariesavch@icloud.com>"]
 edition = "2021"
 
 [dependencies]
+css-in-rs = { git = "https://github.com/mariesavch/css-in-rs.git", version = "0.2.0", features = ["dioxus"] }
 dioxus = { version = "0.6.0-alpha.4", features = ["router", "web"] }
 dioxus-logger = "0.5.1"
 dioxus-sdk = { git = "https://github.com/dioxuslabs/sdk", branch = "feat/dioxus-0.6", features = [
@@ -13,4 +14,3 @@ dioxus-sdk = { git = "https://github.com/dioxuslabs/sdk", branch = "feat/dioxus-
 num-format = "0.4.4"
 reqwest = { version = "0.12.8", features = ["json"] }
 serde = "1.0.213"
-sir = { git = "https://gitlab.com/mariesavch/sir", version = "0.5.0", features = ["dioxus"] }
